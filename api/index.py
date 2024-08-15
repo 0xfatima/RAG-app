@@ -38,7 +38,25 @@ Translate in specific language if user asks you to
 
 #loading video from youtube
 loader = YoutubeLoader.from_youtube_url("https://www.youtube.com/watch?v=e-gwvmhyU7A", add_video_info=True)
-data = loader.load()
+def split_transcript(transcript, max_chunk_size=10000):
+    chunks = []
+    current_chunk = ""
+    
+    for line in transcript.split("\n"):
+        if len(current_chunk) + len(line) > max_chunk_size:
+            chunks.append(current_chunk)
+            current_chunk = line
+        else:
+            current_chunk += "\n" + line
+    
+    if current_chunk:
+        chunks.append(current_chunk)
+    
+    return chunks
+
+# Usage
+transcript = loader.load()  # Assume this loads the transcript
+data = split_transcript(transcript)
 
 
 # making chunks of data got from youtube video
