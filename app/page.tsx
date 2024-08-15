@@ -46,7 +46,7 @@ const Chatbot = () => {
     //used to clear the input placeolder
     setUserMessage("");
     try{
-      const getResponse = await fetch("http://localhost:8000/api/ask/", {
+      const getResponse = await fetch("/api/ask/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
