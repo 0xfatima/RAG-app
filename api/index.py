@@ -36,70 +36,16 @@ primer = f"""You are a personal assistant. Answer any questions I have about the
 Translate in specific language if user asks you to
 """
 
-#loading video from youtube
-loader = YoutubeLoader.from_youtube_url("https://youtu.be/9UTQd3Oo6Kw?si=xJ9rM3gK4ERTH9c5", add_video_info=True)
-def split_transcript(transcript, max_chunk_size=10000):
-    chunks = []
-    current_chunk = ""
-    
-    for line in transcript.split("\n"):
-        if len(current_chunk) + len(line) > max_chunk_size:
-            chunks.append(current_chunk)
-            current_chunk = line
-        else:
-            current_chunk += "\n" + line
-    
-    if current_chunk:
-        chunks.append(current_chunk)
-    
-    return chunks
-
-# Usage
-transcript = loader.load()  # Assume this loads the transcript
-data = split_transcript(transcript)
-
-
-# making chunks of data got from youtube video
-tokenizer = tiktoken.get_encoding('p50k_base')
-
-def tiktoken_len(text):
-    tokens = tokenizer.encode(
-        text,
-        disallowed_special=()
-    )
-    return len(tokens)
-
-#defining text_splitter to make chunks
-text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=2000,
-        chunk_overlap=100,
-        length_function=tiktoken_len,
-        separators=["\n\n", "\n", " ", ""]
-)
-
-# splitting data from youtube video using text splitter and tokenizer
-texts = text_splitter.split_documents(data)
 
 #defining hugging face embedding variable
 hf_embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 #initializing vector database "Chroma db"
 vector_store = Chroma(
-    collection_name="data_collection",
+    collection_name="example_collection",
     embedding_function=hf_embeddings,
 )
 
-#storing data into documents variable to add to chroma db (vector database)
-
-documents= [
-    Document(
-        page_content=f"Source: {t.metadata['source']}, Title: {t.metadata['title']} \n\nContent: {t.page_content}",
-                   metadata=t.metadata
-                   )
-    for t in texts]
-
-#adding to database
-vectorstore_from_texts = vector_store.add_documents(documents=documents)
 
 # function to create vector embeddings of the user query 
 
