@@ -37,7 +37,7 @@ Translate in specific language if user asks you to
 """
 
 #loading video from youtube
-loader = YoutubeLoader.from_youtube_url("https://www.youtube.com/watch?v=e-gwvmhyU7A", add_video_info=True)
+loader = YoutubeLoader.from_youtube_url("https://youtu.be/9UTQd3Oo6Kw?si=xJ9rM3gK4ERTH9c5", add_video_info=True)
 def split_transcript(transcript, max_chunk_size=10000):
     chunks = []
     current_chunk = ""
